@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_vertiple_employee_vertiple_employee,vertiple_employee.vertiple_employee,model_hr_employee,vertiple_employee.only_employee,1,0,0,0

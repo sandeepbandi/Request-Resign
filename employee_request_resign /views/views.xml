@@ -1,0 +1,263 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+
+
+      <record model="ir.ui.view" id="request_resign_form">
+            <field name="name">vertiple_employee.request_resign.form</field>
+            <field name="model">vertiple_employee.request_resign</field>
+            <field name="arch" type="xml">
+                <form string="Request resign" create="false" edit="false">
+                    <sheet>
+                        <group>   
+                          <group>
+                              <field name='name'/>  
+                              <field name='general_notice'/>
+                              <!-- <field name='actual_notice'/> -->
+                          </group>
+                          <group>
+                              <field name='notice_date' string="Choose Date"/>
+                              <field name='remarks'/>
+                          </group>
+                            <field name='get_date' invisible='1'/>
+
+                            <!-- <footer>
+                              <button name="write" type="object" string="Save"/>
+                              <button name="cancel" type="object" string="Cancel"/>
+                            </footer> -->
+                       </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="request_resign_form_action">
+            <field name="name">Request Resign</field>
+            <field name="res_model">vertiple_employee.request_resign</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Resign</p>
+            </field>
+        </record>
+
+        <!-- <record model="ir.actions.act_window.view" id="request_resign_form_action1">
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="request_resign_form">form</field>
+            <field name="target">new</field>
+            <field name="act_window_id" ref="request_resign_form_action"/>
+        </record> -->
+
+        <record id="request_resign_tree_action" model="ir.actions.act_window">
+            <field name="name">Resign Requests</field>
+            <field name="res_model">vertiple_employee.request_resign</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="target">current</field>
+            <field name="help" type="html">
+              <p>
+                No resigns yet.
+              </p>
+            </field>
+        </record>
+
+        <record id="view_request_resign_tree" model="ir.ui.view">
+            <field name="name">Request Resign</field>
+            <field name="model">vertiple_employee.request_resign</field>
+            <field name="arch" type="xml">
+                <tree string="Request Resign">
+                    <field name="request_id"/>
+                    <field name="name"/>
+                    <field name='general_notice'/>
+                    <field name="request_on"/>
+                    <field name="notice_date" string="Date Choosed"/>
+                    <field name="remarks"/>  
+                    
+                </tree>
+            </field>
+        </record>
+
+         <menuitem
+            action="request_resign_tree_action"
+            id="menu_request_resign_tree"
+            parent="hr.menu_human_resources_configuration"
+            sequence="6"
+            />
+
+
+        <!-- <record model="ir.ui.view" id="notice_config_form">
+            <field name="name">vertiple_employee.request_resign.form</field>
+            <field name="model">vertiple_employee.notice_config</field>
+            <field name="arch" type="xml">
+                <form string="Notice configurations">
+                    <sheet>
+                        <group>       
+                            <field name='config_date'/>
+                       </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="notice_config_form_action">
+            <field name="name">Notice Configurations</field>
+            <field name="res_model">vertiple_employee.notice_config</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Notice Configurations</p>
+            </field>
+        </record>
+
+        <menuitem id="notice_config_menu_item" name="Notice" 
+            parent="hr.menu_human_resources_configuration"
+            action="notice_config_form_action" 
+            sequence="10"/>
+ -->
+
+
+       <record model="ir.ui.view" id="hr_inherit">
+            <field name="name">hr employee inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+              <data>    
+                <xpath expr="//form/*" position="before">
+                    <header>
+                      <field name="state" widget="statusbar"/>
+                    </header>
+                </xpath>
+
+                <xpath expr="//field[@name='department_id']" position="before">
+                  <field name="emp_id"/>
+                </xpath>
+                <xpath expr="//field[@name='bank_account_id']" position="after">
+                    <field name="pf_acc_number"/>
+                    <field name="fathers_name"/>
+                    <field name="mothers_name"/>
+                    <field name="spouse_name"/>
+                    <field name="blood_group"/>
+                </xpath>
+
+                <xpath expr="//field[@name='birthday']" position="after">
+                  <field name="birthday_as_per_cert"/>
+                </xpath>
+<!-- 
+                <xpath expr="//field[@name='mobile_phone']" position="before">
+                  
+                  <field name="working_address" groups="vertiple_employee.only_employee"/>
+                </xpath> -->
+
+                <xpath expr="//field[@name='mobile_phone']" position="before">
+                  <field name="working_address" groups="vertiple_employee.only_employee"/>
+                </xpath>
+
+                <xpath expr="//button[@name='toggle_active']" position="before">
+                    <field name="check_field" invisible="1"/>
+                    <!-- <button name="emp_resign" confirm="Are you sure? You want to raise a Resign Request?" type="object" string="Request Resign" attrs="{'invisible': [('check_field', '=', False)]}" /> -->
+                    <button type="action" string="Request Resign" name="%(request_resign_form_action)d" confirm = "Are you sure? You want to raise a Resign Request" attrs="{'invisible': [('state', '=', 'notice')]}"/>
+                </xpath>
+
+                <!-- <xpath expr="//page[@name='public']//field[@name='work_phone']" position="after">
+                    <field name="work_phone" position="attributes">
+                      <attribute name="invisible">True</attribute>
+                    </field> </xpath>-->
+
+               <!--Actions Tab page-->
+               <xpath expr="//page[@name='hr_settings']" position="after">
+                  <page name="actions" string="Actions" groups="hr.group_hr_user">
+                      <group string='Manager Actions' name="active_group" >
+                          <field name="manager_status" help="Employee's current status of Approval/Refusal from Manager"/>
+                          <field name="manager_feedback" /><br></br><br></br>
+                          <button string="Approve" name="manager_approve" type="object" groups="hr.group_only_user" class="oe_highlight oe_edit_only" style="width: 35%" help="This button lets you approve the Employee"/>
+                          <button string="Refuse" name="manager_refuse" type="object" groups="hr.group_only_user" class="oe_highlight oe_edit_only" style="width: 35%" help="This button lets you refuse the Employee"/>
+                      </group>                                                                        
+                      
+                      <group string='HR Actions' name="active_group" groups="hr.group_hr_manager" >
+                          <field name="hr_status" help="Employee's current status of Approval/Refusal from HR"/>
+                          <field name="hr_feedback"  groups="hr.group_hr_manager"/><br></br><br></br>
+                          <button string="Approve" name="hr_approve" type="object" groups="hr.group_hr_manager" class="oe_highlight oe_edit_only"
+                           style="width: 35%" help="This button lets you approve the Employee"/>
+                          <button string="Refuse" name="hr_refuse" type="object" groups="hr.group_hr_manager" class="oe_highlight oe_edit_only" style="width: 35%" help="This button lets you refuse the Employee"/><br></br><br></br>
+                          <button string="System Setup Request" name="send_system_setup_mail" type="object" groups="hr.group_hr_manager" class="oe_highlight" style="width: 35%"
+                          help="Send's an email request to IT team for System Setup and generation of new email for an Employee"/>
+                      </group>
+                      
+                      <group string='Administrator Actions' name="active_group" groups="base.group_system">
+                          <button string="Reset to Probation" name="set_to_probation" type="object" style="width: 35%" class="oe_highlight oe_edit_only" help="This button lets you to reset the state of an employee to 'Probation'"/>
+                          <button string="Confirm" name="set_to_confirm" type="object" style="width: 35%" class="oe_highlight oe_edit_only" help="This button lets you to set the state of an employee to 'Confirm'"/><br></br><br></br>
+                          <button string="Manager review" name="set_to_manager_review" type="object" style="width: 35%" class="oe_highlight oe_edit_only" help="This button lets you to set the state of an employee to 'Manager Review'"/>
+                          <button string="Exit" name="set_to_exit" type="object"  style="width: 35%" class="oe_highlight oe_edit_only" help="This button lets you to set the state of an employee to 'Exit'"/>
+                      </group> 
+                  </page>
+                </xpath>
+
+              </data>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="hr_inherit_contract">
+            <field name="name">hr contract inherit</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+            <field name="arch" type="xml">
+              <data>    
+                <xpath expr="//field[@name='working_hours']" position="after">
+                  <field name="notice_days"/>
+                </xpath>
+              </data>
+            </field>
+          </record>
+<!--     Blood Group     -->
+
+         <record model="ir.ui.view" id="blood_group_form">
+            <field name="name">vertiple_employee.blood_group.form</field>
+            <field name="model">vertiple_employee.blood_group</field>
+            <field name="arch" type="xml">
+                <form string="Blood Group">
+                    <sheet>
+                        <group>       
+                            <field name='name'/>
+                       </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="blood_group_form_action">
+            <field name="name">Blood Group</field>
+            <field name="res_model">vertiple_employee.blood_group</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Create Blood Group</p>
+            </field>
+        </record>
+
+        <menuitem id="blood_group_menu_item" name="Blood Groups" 
+            parent="hr.menu_human_resources_configuration"
+            action="blood_group_form_action" 
+            sequence="1"/>
+
+        <record id="resign_notification_email_template" model="mail.template">
+          <field name="name">Resignation Email Notification Template</field>
+          <field name="email_from">${object.emp_id.work_email}</field>
+          <field name="subject">${object.name} has raised resignation request.</field>
+          <field name="email_to">${object.emp_id.parent_id.work_email}</field>
+          <field name="email_cc">dsdlddaa@gmail.com</field>
+          <field name="lang">${object.lang}</field>
+          <field name="model_id" ref="model_vertiple_employee_request_resign"/>
+          <field name="auto_delete" eval="True"/>
+    <field name="body_html">
+            <![CDATA[      
+            
+        <div style="background-image: initial; background-position: center top; background-size: 100%; background-repeat: repeat; background-attachment: initial; background-origin: initial; background-clip: initial; padding: 0px; width: 600px; margin: auto; color: rgb(119, 119, 119);"><table cellspacing="0" cellpadding="0" style="background-image: inherit; background-position: inherit; background-size: inherit; background-repeat: inherit; background-attachment: inherit; background-origin: inherit; background-clip: inherit; width: 600px; color: inherit;"><tbody><tr><td valign="center" width="200" style="padding: 10px 10px 10px 5px; font-size: 12px;"><img src="http://127.0.0.1:8069/logo.png" alt="${user.company_id.name}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" data-original-title="" title=""></td></tr></tbody></table></div><div style="background-image: initial; background-position: center top; background-size: 100%; background-repeat: repeat; background-attachment: initial; background-origin: initial; background-clip: initial; padding: 0px; width: 600px; margin: auto; color: rgb(119, 119, 119);"><p>Dear  ${object.emp_id.parent_id.display_name},</p><p>This is to update you that Employee  has raised a resignation request on . Kindly, do look into the same and proceed accordingly.</p><p>Here are his details of his resignation:</p><p><br></p><p>Request ID:  ${object.request_id}  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </p><p>Name of Employee: ${object.name} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-family: inherit; font-style: initial; font-variant-ligatures: initial; font-variant-caps: initial; font-weight: initial;"></span><br></p><p>Requested On: ${object.request_on}   &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </p><p>Employee Notice Choice:  ${object.notice_date}&nbsp;&nbsp;&nbsp;&nbsp;</p><p>Remarks from Employee: ${object.remarks} &nbsp; &nbsp; <br></p><div style="text-align: center; margin-top: 16px;"><br></div><p><br></p><p>Best regards,</p></div><div style="background-image: initial; background-position: center top; background-size: 100%; background-repeat: repeat; background-attachment: initial; background-origin: initial; background-clip: initial; padding: 0px; width: 600px; margin: 10px auto auto; color: rgb(119, 119, 119);">${user.signature | safe}<p style="margin-top: 10px; font-size: 11px;"><strong>Sent by ${user.company_id.name} using&nbsp;<a href="http://127.0.0.1:8069/www.vertiple.com" style="color: rgb(135, 90, 123);">Vertiplex</a></strong></p></div>
+      ]]>
+    </field>
+       </record>
+
+        
+
+
+</odoo>
